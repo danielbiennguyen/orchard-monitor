@@ -92,9 +92,10 @@ body{
 
 .demo-controls{
   border:1px dashed var(--line); border-radius:10px; padding:10px 14px; margin-bottom:26px;
-  display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-size:12.5px; color:var(--text-faint);
+  display:flex; flex-direction:column; align-items:flex-start; gap:10px; font-size:12.5px; color:var(--text-faint);
 }
 .demo-controls span.lbl{font-family:'IBM Plex Mono',monospace; text-transform:none;}
+.demo-mode-buttons{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
 .demo-controls button{
   border:1px solid var(--line); background:var(--surface); color:var(--text); font-size:12.5px;
   padding:6px 12px; border-radius:20px; cursor:pointer; font-family:'IBM Plex Sans',sans-serif;
@@ -230,9 +231,11 @@ body{
 
   <div class="demo-controls">
     <span class="lbl">Mô phỏng trạng thái:</span>
-    <button data-mode="server" class="active">Server</button>
-    <button data-mode="direct">Direct (BLE)</button>
-    <button data-mode="offline">Mất kết nối</button>
+    <div class="demo-mode-buttons">
+      <button data-mode="server" class="active">Server</button>
+      <button data-mode="direct">Direct (BLE)</button>
+      <button data-mode="offline">Mất kết nối</button>
+    </div>
   </div>
 
   <div class="grid" id="statGrid">
@@ -520,7 +523,7 @@ function drawMetricChart(){
   ctx.setTransform(ratio,0,0,ratio,0,0);
   ctx.clearRect(0,0,width,height);
 
-  const pad = {top:16,right:12,bottom:38,left:38};
+  const pad = {top:16,right:38,bottom:38,left:38};
   const plotWidth = width-pad.left-pad.right;
   const plotHeight = height-pad.top-pad.bottom;
   const dataMin = metric.min ?? Math.floor(Math.min(...values)-metric.minPadding);
@@ -539,11 +542,11 @@ function drawMetricChart(){
     ctx.beginPath(); ctx.moveTo(pad.left,yPos); ctx.lineTo(width-pad.right,yPos); ctx.stroke();
     ctx.fillText(value.toFixed(metric.unit === '°C' ? 1 : 0), 3, yPos+3);
   }
+  ctx.textAlign = 'center';
   for(let i=0;i<6;i++){
     const fraction = i/5;
     const index = Math.round((values.length-1)*fraction);
     const labelX = pad.left + fraction*plotWidth;
-    ctx.textAlign = i === 0 ? 'left' : i === 5 ? 'right' : 'center';
     ctx.fillText(labels[index], labelX, height-12);
   }
   ctx.textAlign = 'left';
